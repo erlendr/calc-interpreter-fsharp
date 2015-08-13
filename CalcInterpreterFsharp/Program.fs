@@ -8,16 +8,16 @@ type Token =
 let Tokenize (text: string) =
     text |> Seq.mapi(fun i x ->
         match x with
-        | x when Char.IsDigit x -> Integer(Int32.Parse (sprintf "%c" x))
-        | '+' -> Plus
-        | '\n' when i = text.Length-1 -> Eof
-        | _ -> failwith "unknown token"
+        | x when Char.IsDigit x -> Some(Integer(Int32.Parse (sprintf "%c" x)))
+        | '+' -> Some(Plus)
+        | '\n' when i = text.Length-1 -> Some(Eof)
+        | _ -> None
     )
 
 let Interpret tokens =
     match tokens |> Array.ofSeq with
-    | [| Integer(x); Plus; Integer(y); |] -> x + y
-    | _ -> failwith "unknown syntax, not x+y"
+    | [| Some(Integer(x)); Some(Plus); Some(Integer(y)); |] -> Some(x + y)
+    | _ -> None
 
 [<EntryPoint>]
 let main argv = 
@@ -26,5 +26,7 @@ let main argv =
             printf "Input x+y expression: "
             let input = System.Console.ReadLine()
             let result = input |> Tokenize |> Interpret
-            printfn "Result: %i" result
+            match result with
+            | Some result -> printfn "Result: %i" result
+            | None -> printfn "Could not parse, try again"
     0 // return an integer exit code
