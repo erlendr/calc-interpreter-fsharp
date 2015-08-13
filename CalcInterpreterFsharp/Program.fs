@@ -4,21 +4,18 @@ let INTEGER = "INTEGER"
 let PLUS = "PLUS"
 let EOF = "EOF"
 
-type Token = {
-    Type: string; // token type: INTEGER, PLUS or EOF
-    Value: string; // token value: 0-9, '+' or None
-}
-
-let TokenToString (token : Token) =
-     String.Format("Token({0}, {1})", token.Type, token.Value)
+type Token =
+    | Integer of value : int
+    | Plus
+    | Eof
 
 let Tokenize (text: string) =
     text |> Seq.mapi(fun i x ->
         let result = 
             match x with
-            | x when Char.IsDigit x -> { Type = INTEGER; Value = (sprintf "%c" x); }
-            | '+' -> { Type = PLUS; Value = "+"; }
-            | '\n' when i = text.Length-1 -> { Type = EOF; Value = "None"; }
+            | x when Char.IsDigit x -> Integer(value = Int32.Parse (sprintf "%c" x))
+            | '+' -> Plus
+            | '\n' when i = text.Length-1 -> Eof
             | _ -> failwith "unknown token"
         result
     )
@@ -26,10 +23,10 @@ let Tokenize (text: string) =
 let Interpret tokens =
     match tokens |> Array.ofSeq with
     | [| 
-        {Type = "INTEGER"; Value = x};
-        {Type = "PLUS"; };
-        {Type = "INTEGER"; Value = y};
-      |] -> (Int32.Parse x) + (Int32.Parse y)
+        Integer(value = x);
+        Plus;
+        Integer(value = y);
+      |] -> x + y
     | _ -> failwith "unknown syntax, not x+y"
 
 [<EntryPoint>]
