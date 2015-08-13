@@ -1,9 +1,5 @@
 ﻿open System
 
-let INTEGER = "INTEGER"
-let PLUS = "PLUS"
-let EOF = "EOF"
-
 type Token =
     | Integer of int
     | Plus
