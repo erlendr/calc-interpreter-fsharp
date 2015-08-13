@@ -23,15 +23,21 @@ let Tokenize (text: string) =
         result
     )
 
-let Interpret (text: string) =
-    let pos = 0
-    let currentToken = null
-    
-    0
+let Interpret tokens =
+    match tokens |> Array.ofSeq with
+    | [| 
+        {Type = "INTEGER"; Value = x};
+        {Type = "PLUS"; };
+        {Type = "INTEGER"; Value = y};
+      |] -> (Int32.Parse x) + (Int32.Parse y)
+    | _ -> failwith "unknown syntax, not x+y"
 
 [<EntryPoint>]
 let main argv = 
-    let input = System.Console.ReadLine()
-    printf "You wrote: %s" input
-    System.Console.ReadKey() |> ignore
+    while true
+        do
+            printf "Input x+y expression: "
+            let input = System.Console.ReadLine()
+            let result = input |> Tokenize |> Interpret
+            printfn "Result: %i" result
     0 // return an integer exit code
