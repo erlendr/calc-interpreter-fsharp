@@ -16,11 +16,7 @@ let Tokenize (text: string) =
 
 let Interpret tokens =
     match tokens |> Array.ofSeq with
-    | [| 
-        Integer(x);
-        Plus;
-        Integer(y);
-      |] -> x + y
+    | [| Integer(x); Plus; Integer(y); |] -> x + y
     | _ -> failwith "unknown syntax, not x+y"
 
 [<EntryPoint>]
