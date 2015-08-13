@@ -7,13 +7,11 @@ type Token =
 
 let Tokenize (text: string) =
     text |> Seq.mapi(fun i x ->
-        let result = 
-            match x with
-            | x when Char.IsDigit x -> Integer(Int32.Parse (sprintf "%c" x))
-            | '+' -> Plus
-            | '\n' when i = text.Length-1 -> Eof
-            | _ -> failwith "unknown token"
-        result
+        match x with
+        | x when Char.IsDigit x -> Integer(Int32.Parse (sprintf "%c" x))
+        | '+' -> Plus
+        | '\n' when i = text.Length-1 -> Eof
+        | _ -> failwith "unknown token"
     )
 
 let Interpret tokens =
