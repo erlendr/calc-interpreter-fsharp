@@ -5,7 +5,7 @@ let PLUS = "PLUS"
 let EOF = "EOF"
 
 type Token =
-    | Integer of value : int
+    | Integer of int
     | Plus
     | Eof
 
@@ -13,7 +13,7 @@ let Tokenize (text: string) =
     text |> Seq.mapi(fun i x ->
         let result = 
             match x with
-            | x when Char.IsDigit x -> Integer(value = Int32.Parse (sprintf "%c" x))
+            | x when Char.IsDigit x -> Integer(Int32.Parse (sprintf "%c" x))
             | '+' -> Plus
             | '\n' when i = text.Length-1 -> Eof
             | _ -> failwith "unknown token"
@@ -23,9 +23,9 @@ let Tokenize (text: string) =
 let Interpret tokens =
     match tokens |> Array.ofSeq with
     | [| 
-        Integer(value = x);
+        Integer(x);
         Plus;
-        Integer(value = y);
+        Integer(y);
       |] -> x + y
     | _ -> failwith "unknown syntax, not x+y"
 
