@@ -13,14 +13,11 @@ let Tokenize (text: char list list) =
         match x with
         | hd :: tl when Char.IsDigit hd -> Some(Integer(x |> CharToString |> Int32.Parse))
         | ['+'] | ['-']-> Some(Operator(x |> CharToString))
-//        | '\n' when i = text.Length-1 -> Some(Eof)
         | _ -> None
     )
 
 let Interpret tokens =
-    let filteredTokens = tokens |> Seq.filter (fun x -> x <> None)
-
-    match filteredTokens |> Array.ofSeq with
+    match tokens |> Array.ofSeq with
     | [| Some(Integer(x)); Some(Operator("+")); Some(Integer(y)); |] -> Some(x + y)
     | [| Some(Integer(x)); Some(Operator("-")); Some(Integer(y)); |] -> Some(x - y)
     | _ -> None
@@ -32,6 +29,7 @@ let PreprocessInput (text: string) =
         | _ -> [] :: [[el]] @ acc
         
     List.foldBack breakIntoDigitGroups (List.ofSeq text) [ [] ]
+    |> List.filter(fun x -> x <> [] && x <> [' '])
 
 [<EntryPoint>]
 let main argv = 
