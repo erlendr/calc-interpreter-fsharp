@@ -2,7 +2,7 @@
 
 type Token =
     | Integer of int
-    | Plus
+    | Operator of string
     | Eof
 
 let CharListToString list =
@@ -12,7 +12,7 @@ let Tokenize (text: char list list) =
     text |> Seq.mapi(fun i x ->
         match x with
         | hd :: tl when Char.IsDigit hd -> Some(Integer(x |> CharListToString |> Int32.Parse))
-        | ['+'] -> Some(Plus)
+        | ['+'] | ['-']-> Some(Operator(x |> CharListToString))
 //        | '\n' when i = text.Length-1 -> Some(Eof)
         | _ -> None
     )
@@ -21,7 +21,8 @@ let Interpret tokens =
     let filteredTokens = tokens |> Seq.filter (fun x -> x <> None)
 
     match filteredTokens |> Array.ofSeq with
-    | [| Some(Integer(x)); Some(Plus); Some(Integer(y)); |] -> Some(x + y)
+    | [| Some(Integer(x)); Some(Operator("+")); Some(Integer(y)); |] -> Some(x + y)
+    | [| Some(Integer(x)); Some(Operator("-")); Some(Integer(y)); |] -> Some(x - y)
     | _ -> None
 
 let PreprocessInput (text: string) =
@@ -36,7 +37,7 @@ let PreprocessInput (text: string) =
 let main argv = 
     while true
         do
-            printf "Input x+y expression: "
+            printf "Calc> "
             let input = System.Console.ReadLine()
             let result = input |> PreprocessInput |> Tokenize |> Interpret
             match result with
