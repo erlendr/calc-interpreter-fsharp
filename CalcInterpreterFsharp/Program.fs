@@ -5,14 +5,14 @@ type Token =
     | Operator of string
     | Eof
 
-let CharListToString list =
+let CharToString list =
     new System.String(Array.ofList list)
 
 let Tokenize (text: char list list) =
     text |> Seq.mapi(fun i x ->
         match x with
-        | hd :: tl when Char.IsDigit hd -> Some(Integer(x |> CharListToString |> Int32.Parse))
-        | ['+'] | ['-']-> Some(Operator(x |> CharListToString))
+        | hd :: tl when Char.IsDigit hd -> Some(Integer(x |> CharToString |> Int32.Parse))
+        | ['+'] | ['-']-> Some(Operator(x |> CharToString))
 //        | '\n' when i = text.Length-1 -> Some(Eof)
         | _ -> None
     )
